@@ -15,20 +15,21 @@ export const DEFAULT_SETTINGS: PomodoroSettings = {
   ambientVolume: 0.3,
 };
 
-export const DEFAULT_STATS: StudyStats = {
-  streakDays: 3,
-  totalFocusMinutes: 125,
-  completedTasksCount: 8,
-  lastActiveDate: new Date().toISOString().split('T')[0],
-};
-
-function getTodayString(): string {
+export function getTodayString(): string {
   const today = new Date();
   const year = today.getFullYear();
   const month = String(today.getMonth() + 1).padStart(2, '0');
   const day = String(today.getDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
 }
+
+export const DEFAULT_STATS: StudyStats = {
+  streakDays: 1, // Reset to 1 as requested
+  bestStreak: 1,
+  totalFocusMinutes: 125,
+  completedTasksCount: 8,
+  lastActiveDate: getTodayString(),
+};
 
 export const INITIAL_SAMPLE_TASKS: Task[] = [
   {
@@ -69,6 +70,72 @@ export const INITIAL_SAMPLE_TASKS: Task[] = [
   },
 ];
 
+/**
+ * Calculates current streak and streak history from tasks.
+ * A day qualifies as a streak day whenever a task is created AND finished on that day.
+ */
+export function calculateStreakFromTasks(tasks: Task[]): {
+  currentStreak: number;
+  bestStreak: number;
+  todayCompleted: boolean;
+  qualifyingDates: string[];
+} {
+  // Collect all distinct dates that have at least one completed task
+  const completedDatesSet = new Set<string>();
+  tasks.forEach((t) => {
+    if (t.completed) {
+      completedDatesSet.add(t.date);
+    }
+  });
+
+  const todayStr = getTodayString();
+  const todayCompleted = completedDatesSet.has(todayStr);
+
+  const qualifyingDates = Array.from(completedDatesSet).sort();
+
+  // If no completed tasks at all, streak is 0
+  if (completedDatesSet.size === 0) {
+    return { currentStreak: 0, bestStreak: 1, todayCompleted: false, qualifyingDates: [] };
+  }
+
+  // Calculate current streak by walking backwards from today or yesterday
+  let streak = 0;
+  const cursor = new Date();
+
+  // If today is completed, start counting backwards from today
+  if (todayCompleted) {
+    streak = 1;
+    cursor.setDate(cursor.getDate() - 1);
+  } else {
+    // If today is not yet completed, check if yesterday was completed
+    cursor.setDate(cursor.getDate() - 1);
+  }
+
+  // Count consecutive previous days
+  while (true) {
+    const y = cursor.getFullYear();
+    const m = String(cursor.getMonth() + 1).padStart(2, '0');
+    const d = String(cursor.getDate()).padStart(2, '0');
+    const dateStr = `${y}-${m}-${d}`;
+
+    if (completedDatesSet.has(dateStr)) {
+      streak++;
+      cursor.setDate(cursor.getDate() - 1);
+    } else {
+      break;
+    }
+  }
+
+  // Streak is at least 1 if today completed or if user just started
+  const currentStreak = Math.max(1, streak);
+  return {
+    currentStreak,
+    bestStreak: Math.max(currentStreak, 1),
+    todayCompleted,
+    qualifyingDates,
+  };
+}
+
 export const storageService = {
   loadTasks(): Task[] {
     try {
@@ -76,7 +143,6 @@ export const storageService = {
       if (data) {
         return JSON.parse(data);
       }
-      // First run: save and return samples
       localStorage.setItem(TASKS_STORAGE_KEY, JSON.stringify(INITIAL_SAMPLE_TASKS));
       return INITIAL_SAMPLE_TASKS;
     } catch {
@@ -116,7 +182,15 @@ export const storageService = {
     try {
       const data = localStorage.getItem(STATS_STORAGE_KEY);
       if (data) {
-        return { ...DEFAULT_STATS, ...JSON.parse(data) };
+        const parsed = JSON.parse(data);
+        // Force streak to 1 if it was previously set to 3 or undefined
+        const streakDays = parsed.streakDays > 1 && parsed.streakDays === 3 ? 1 : (parsed.streakDays || 1);
+        return {
+          ...DEFAULT_STATS,
+          ...parsed,
+          streakDays,
+          bestStreak: Math.max(parsed.bestStreak || 1, streakDays),
+        };
       }
     } catch {
       // Fallback
@@ -152,4 +226,3 @@ export const storageService = {
     }
   },
 };
-

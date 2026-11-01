@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Task, TimerMode, PomodoroSettings, StudyStats, ThemeType } from './types';
-import { storageService } from './services/storageService';
+import { storageService, calculateStreakFromTasks, getTodayString } from './services/storageService';
 import { sound } from './services/soundService';
 import { Navbar } from './components/Navbar';
 import { CompanionMascot } from './components/CompanionMascot';
@@ -9,14 +9,7 @@ import { DailyTaskList } from './components/DailyTaskList';
 import { PixelCalendar } from './components/PixelCalendar';
 import { SettingsModal } from './components/SettingsModal';
 import { ScenicBackground } from './components/ScenicBackground';
-
-function getTodayString(): string {
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, '0');
-  const day = String(today.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
-}
+import { StreakModal } from './components/StreakModal';
 
 export function App() {
   const [tasks, setTasks] = useState<Task[]>(() => storageService.loadTasks());
@@ -38,6 +31,7 @@ export function App() {
 
   const [celebrating, setCelebrating] = useState<boolean>(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
+  const [isStreakModalOpen, setIsStreakModalOpen] = useState<boolean>(false);
 
   // Sync theme to body class
   useEffect(() => {
@@ -65,20 +59,14 @@ export function App() {
     localStorage.setItem('anime_pixel_zoom_level', String(newZoom));
   };
 
-  // Daily streak check on mount
+  // Streak synchronization on mount: default back to 1
   useEffect(() => {
-    const today = getTodayString();
-    if (stats.lastActiveDate !== today) {
-      const yesterday = new Date();
-      yesterday.setDate(yesterday.getDate() - 1);
-      const yStr = `${yesterday.getFullYear()}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`;
-
-      setStats((prev) => ({
-        ...prev,
-        streakDays: prev.lastActiveDate === yStr ? prev.streakDays + 1 : 1,
-        lastActiveDate: today,
-      }));
-    }
+    const streakInfo = calculateStreakFromTasks(tasks);
+    setStats((prev) => ({
+      ...prev,
+      streakDays: Math.max(1, streakInfo.currentStreak),
+      bestStreak: Math.max(prev.bestStreak || 1, streakInfo.currentStreak, 1),
+    }));
   }, []);
 
   // Timer Tick Interval
@@ -177,7 +165,7 @@ export function App() {
     setTimeLeft((prev) => Math.max(60, prev + deltaMinutes * 60));
   };
 
-  // Task Actions
+  // Task Actions & Streak Tracking
   const handleAddTask = (taskData: Omit<Task, 'id' | 'createdAt' | 'completedPomodoros'>) => {
     const newTask: Task = {
       ...taskData,
@@ -189,18 +177,34 @@ export function App() {
   };
 
   const handleUpdateTask = (updated: Task) => {
-    setTasks((prev) => prev.map((t) => (t.id === updated.id ? updated : t)));
+    const nextTasks = tasks.map((t) => (t.id === updated.id ? updated : t));
+    setTasks(nextTasks);
+
+    // When a task is completed, evaluate streak: streak is formed when created & finished
     if (updated.completed) {
+      const streakInfo = calculateStreakFromTasks(nextTasks);
       setStats((prev) => ({
         ...prev,
         completedTasksCount: prev.completedTasksCount + 1,
+        streakDays: Math.max(1, streakInfo.currentStreak),
+        bestStreak: Math.max(prev.bestStreak || 1, streakInfo.currentStreak),
+        lastActiveDate: getTodayString(),
       }));
     }
   };
 
   const handleDeleteTask = (id: string) => {
-    setTasks((prev) => prev.filter((t) => t.id !== id));
+    const nextTasks = tasks.filter((t) => t.id !== id);
+    setTasks(nextTasks);
     if (activeTaskId === id) setActiveTaskId(null);
+  };
+
+  const handleResetStreakToOne = () => {
+    setStats((prev) => ({
+      ...prev,
+      streakDays: 1,
+      bestStreak: Math.max(prev.bestStreak || 1, 1),
+    }));
   };
 
   const triggerCelebration = () => {
@@ -238,7 +242,7 @@ export function App() {
 
   return (
     <div className="relative min-h-screen">
-      {/* 1. Scenic Anime Background (Sakura Trees, Roads, Clouds, Drifting Petals) */}
+      {/* 1. Scenic Anime Background */}
       <ScenicBackground />
 
       {/* 2. Scaled / Zoomed-out Content Container */}
@@ -259,6 +263,7 @@ export function App() {
               setSettings((prev) => ({ ...prev, soundEnabled: !prev.soundEnabled }))
             }
             onOpenSettings={() => setIsSettingsOpen(true)}
+            onOpenStreakModal={() => setIsStreakModalOpen(true)}
             zoomLevel={zoomLevel}
             onZoomChange={handleZoomChange}
           />
@@ -354,11 +359,11 @@ export function App() {
           </div>
           <div className="flex items-center gap-3">
             <span>Rules: <strong className="text-[var(--color-text-main)]">style.md</strong></span>
-            <span>Zoom: <strong>{zoomLevel}%</strong></span>
+            <span>Streak: <strong className="text-[var(--color-warning-break)]">{stats.streakDays} Day🔥</strong></span>
           </div>
         </footer>
 
-        {/* Configuration Drawer / Modal */}
+        {/* Configuration Modal */}
         <SettingsModal
           isOpen={isSettingsOpen}
           settings={settings}
@@ -373,6 +378,15 @@ export function App() {
           }}
           onExportData={handleExportData}
           onImportData={handleImportData}
+        />
+
+        {/* Streak Tracker & Journey Modal */}
+        <StreakModal
+          isOpen={isStreakModalOpen}
+          tasks={tasks}
+          stats={stats}
+          onClose={() => setIsStreakModalOpen(false)}
+          onResetStreakToOne={handleResetStreakToOne}
         />
       </div>
     </div>

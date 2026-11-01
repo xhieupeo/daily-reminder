@@ -35,10 +35,10 @@ export interface PomodoroState {
 
 export interface StudyStats {
   streakDays: number;
+  bestStreak: number;
   totalFocusMinutes: number;
   completedTasksCount: number;
   lastActiveDate: string; // YYYY-MM-DD
 }
 
 export type ThemeType = 'twilight' | 'sunny' | 'cyberpunk';
-

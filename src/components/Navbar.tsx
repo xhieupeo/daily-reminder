@@ -10,6 +10,7 @@ interface NavbarProps {
   soundEnabled: boolean;
   onToggleSound: () => void;
   onOpenSettings: () => void;
+  onOpenStreakModal: () => void;
   zoomLevel: number;
   onZoomChange: (zoom: number) => void;
 }
@@ -21,6 +22,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   soundEnabled,
   onToggleSound,
   onOpenSettings,
+  onOpenStreakModal,
   zoomLevel,
   onZoomChange,
 }) => {
@@ -53,12 +55,20 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Gamified Stats & Action Controls */}
       <div className="flex flex-wrap items-center gap-2">
-        {/* Streak Counter */}
-        <div className="pixel-inset px-2 py-0.5 flex items-center gap-1.5 text-xs text-[var(--color-warning-break)] font-retro">
+        {/* Streak Counter (Clickable to open Streak Tracker) */}
+        <button
+          type="button"
+          onClick={() => {
+            sound.playClick();
+            onOpenStreakModal();
+          }}
+          title="Click to track your daily study streak & history!"
+          className="pixel-button px-2 py-0.5 flex items-center gap-1.5 text-xs text-[var(--color-warning-break)] font-retro cursor-pointer"
+        >
           <Flame className="w-3.5 h-3.5 text-orange-400 fill-orange-400" />
           <span className="font-bold">{stats.streakDays}</span>
           <span className="text-[var(--color-text-muted)] text-[10px]">DAY STREAK</span>
-        </div>
+        </button>
 
         {/* Total Focus */}
         <div className="pixel-inset px-2 py-0.5 flex items-center gap-1.5 text-xs text-[var(--color-primary-accent)] font-retro">
