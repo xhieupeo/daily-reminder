@@ -11,6 +11,7 @@ import { SettingsModal } from './components/SettingsModal';
 import { ScenicBackground } from './components/ScenicBackground';
 import { StreakModal } from './components/StreakModal';
 import { PasscodeLock } from './components/PasscodeLock';
+import { LofiPlayer } from './components/LofiPlayer';
 
 export function App() {
   const [tasks, setTasks] = useState<Task[]>(() => storageService.loadTasks());
@@ -362,17 +363,8 @@ export function App() {
           </main>
         </div>
 
-        {/* Footer */}
-        <footer className="pixel-panel p-2.5 bg-[#1a192bf5] mt-4 flex flex-col sm:flex-row items-center justify-between text-xs text-[var(--color-text-muted)] font-retro gap-2">
-          <div className="flex items-center gap-2">
-            <span className="text-[var(--color-primary-accent)]">★</span>
-            <span>Sakura Avenue Study Sanctuary — Breathe, Focus, Level Up!</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <span>Rules: <strong className="text-[var(--color-text-main)]">style.md</strong></span>
-            <span>Streak: <strong className="text-[var(--color-warning-break)]">{stats.streakDays} Day🔥</strong></span>
-          </div>
-        </footer>
+        {/* Lofi Music Player Console & Song Banner (Replaces Old Footer) */}
+        <LofiPlayer />
 
         {/* Configuration Modal */}
         <SettingsModal
