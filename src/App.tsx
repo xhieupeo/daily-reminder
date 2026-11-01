@@ -10,12 +10,17 @@ import { PixelCalendar } from './components/PixelCalendar';
 import { SettingsModal } from './components/SettingsModal';
 import { ScenicBackground } from './components/ScenicBackground';
 import { StreakModal } from './components/StreakModal';
+import { PasscodeLock } from './components/PasscodeLock';
 
 export function App() {
   const [tasks, setTasks] = useState<Task[]>(() => storageService.loadTasks());
   const [settings, setSettings] = useState<PomodoroSettings>(() => storageService.loadSettings());
   const [stats, setStats] = useState<StudyStats>(() => storageService.loadStats());
   const [theme, setTheme] = useState<ThemeType>(() => storageService.loadTheme());
+
+  const [isUnlocked, setIsUnlocked] = useState<boolean>(() => {
+    return localStorage.getItem('xuan_hieu_auth_token_v1') === 'unlocked_110907';
+  });
 
   const [zoomLevel, setZoomLevel] = useState<number>(() => {
     const saved = localStorage.getItem('anime_pixel_zoom_level');
@@ -207,6 +212,11 @@ export function App() {
     }));
   };
 
+  const handleLockApp = () => {
+    localStorage.removeItem('xuan_hieu_auth_token_v1');
+    setIsUnlocked(false);
+  };
+
   const triggerCelebration = () => {
     setCelebrating(true);
     setTimeout(() => setCelebrating(false), 5000);
@@ -266,6 +276,7 @@ export function App() {
             onOpenStreakModal={() => setIsStreakModalOpen(true)}
             zoomLevel={zoomLevel}
             onZoomChange={handleZoomChange}
+            onLockApp={handleLockApp}
           />
 
           {/* 3-Column Main Dashboard Grid */}
@@ -389,6 +400,11 @@ export function App() {
           onResetStreakToOne={handleResetStreakToOne}
         />
       </div>
+
+      {/* 3. Passcode Gatekeeper Lock (Master Code: 110907) */}
+      {!isUnlocked && (
+        <PasscodeLock onUnlock={() => setIsUnlocked(true)} />
+      )}
     </div>
   );
 }

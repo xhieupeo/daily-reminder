@@ -1,7 +1,7 @@
 import React from 'react';
 import { ThemeType, StudyStats } from '../types';
 import { sound } from '../services/soundService';
-import { Volume2, VolumeX, Settings, Flame, Sparkles, Moon, Sun, Zap, ZoomIn } from 'lucide-react';
+import { Volume2, VolumeX, Settings, Flame, Sparkles, Moon, Sun, Zap, ZoomIn, Lock } from 'lucide-react';
 
 interface NavbarProps {
   stats: StudyStats;
@@ -13,6 +13,7 @@ interface NavbarProps {
   onOpenStreakModal: () => void;
   zoomLevel: number;
   onZoomChange: (zoom: number) => void;
+  onLockApp?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -25,6 +26,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenStreakModal,
   zoomLevel,
   onZoomChange,
+  onLockApp,
 }) => {
   const cycleTheme = () => {
     sound.playClick();
@@ -146,6 +148,20 @@ export const Navbar: React.FC<NavbarProps> = ({
         >
           <Settings className="w-3.5 h-3.5 text-[var(--color-text-main)]" />
         </button>
+
+        {/* Lock Session Button */}
+        {onLockApp && (
+          <button
+            onClick={() => {
+              sound.playClick();
+              onLockApp();
+            }}
+            title="Lock Xuan Hieu's Sanctuary (Passcode: 110907)"
+            className="pixel-button p-1.5 text-[var(--color-primary-accent)]"
+          >
+            <Lock className="w-3.5 h-3.5" />
+          </button>
+        )}
       </div>
     </header>
   );
