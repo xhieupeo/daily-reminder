@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anime Pixel Daily Reminder — Diagrams & Workflows</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
+
+    :root {
+      --bg-space: #141324;
+      --card-bg: #222034;
+      --card-hover: #2e2b45;
+      --inset-bg: #12111d;
+      --border-dark: #0a0912;
+      --border-accent: #3f395b;
+      --pink-sakura: #f49ac2;
+      --mint-tea: #8bd5ca;
+      --gold-sun: #f9c846;
+      --text-cream: #f6eedb;
+      --text-dim: #9990b8;
+      --danger-coral: #ea7679;
+    }
+
+    body {
+      background-color: var(--bg-space);
+      color: var(--text-cream);
+      font-family: 'VT323', 'Courier New', monospace;
+      image-rendering: pixelated;
+    }
+
+    .pixel-font {
+      font-family: 'Press Start 2P', monospace;
+    }
+
+    .pixel-box {
+      background: var(--card-bg);
+      border: 3px solid var(--border-dark);
+      box-shadow: 4px 4px 0px 0px var(--border-dark);
+    }
+
+    .pixel-btn {
+      background: var(--card-bg);
+      border: 3px solid var(--border-dark);
+      box-shadow: 3px 3px 0px 0px var(--border-dark);
+      transition: transform 0.05s ease, box-shadow 0.05s ease;
+      cursor: pointer;
+    }
+
+    .pixel-btn:hover {
+      background: var(--card-hover);
+    }
+
+    .pixel-btn:active, .pixel-btn.active-tab {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0px 0px var(--border-dark);
+      background: var(--pink-sakura);
+      color: #0a0912;
+    }
+
+    .pixel-inset {
+      background: var(--inset-bg);
+      border: 2px solid var(--border-dark);
+      box-shadow: inset 2px 2px 0px rgba(0,0,0,0.4);
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--inset-bg);
+      border: 2px solid var(--border-dark);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-accent);
+      border: 2px solid var(--border-dark);
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--pink-sakura);
+    }
+
+    /* Animation frames */
+    @keyframes bobbing {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-3px); }
+    }
+    .animate-bob {
+      animation: bobbing 1.6s steps(2) infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+    .animate-pulse-pixel {
+      animation: pulse-dot 1s steps(2) infinite;
+    }
+  </style>
+</head>
+<body class="p-4 md:p-8 min-h-screen">
+
+  <div class="max-w-6xl mx-auto space-y-6">
+
+    <!-- Header Section -->
+    <header class="pixel-box p-6 bg-[#26243d] flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-4">
+        <!-- Pixel Cat Avatar SVG -->
+        <div class="w-16 h-16 pixel-box bg-[#1a192b] p-1 flex items-center justify-center animate-bob">
+          <svg viewBox="0 0 16 16" class="w-14 h-14" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="3" y="2" width="2" height="3" fill="#f49ac2"/>
+            <rect x="11" y="2" width="2" height="3" fill="#f49ac2"/>
+            <rect x="4" y="4" width="8" height="8" fill="#f6eedb"/>
+            <rect x="5" y="7" width="2" height="2" fill="#141324"/>
+            <rect x="9" y="7" width="2" height="2" fill="#141324"/>
+            <rect x="7" y="9" width="2" height="1" fill="#ea7679"/>
+            <rect x="2" y="8" width="2" height="1" fill="#9990b8"/>
+            <rect x="12" y="8" width="2" height="1" fill="#9990b8"/>
+            <rect x="5" y="12" width="6" height="3" fill="#8bd5ca"/>
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="inline-block w-2.5 h-2.5 bg-[#8bd5ca] animate-pulse-pixel"></span>
+            <span class="pixel-font text-[10px] text-[#8bd5ca] tracking-wider uppercase">System Visualizer & Architecture</span>
+          </div>
+          <h1 class="pixel-font text-lg md:text-xl text-[#f6eedb] mt-1 tracking-wide">
+            Anime Pixel Study & Daily Reminders
+          </h1>
+          <p class="text-sm text-[#9990b8] mt-0.5">
+            Interactive System Flowcharts, State Machines & UI Blueprint
+          </p>
+        </div>
+      </div>
+
+      <!-- Quick Metadata Pills -->
+      <div class="flex flex-wrap gap-2 text-xs">
+        <div class="pixel-inset px-3 py-1.5 flex items-center gap-2 text-[#f9c846]">
+          <span>⚡ STACK:</span>
+          <span class="text-[#f6eedb]">React + Vite + Tailwind</span>
+        </div>
+        <div class="pixel-inset px-3 py-1.5 flex items-center gap-2 text-[#8bd5ca]">
+          <span>☁ SYNC:</span>
+          <span class="text-[#f6eedb]">Supabase / Cloud DB</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="flex flex-wrap gap-2">
+      <button onclick="switchTab('tab-architecture')" id="btn-architecture" class="pixel-btn active-tab px-4 py-2 text-sm pixel-font">
+        1. Architecture
+      </button>
+      <button onclick="switchTab('tab-userflow')" id="btn-userflow" class="pixel-btn px-4 py-2 text-sm pixel-font">
+        2. Study Workflow
+      </button>
+      <button onclick="switchTab('tab-pomodoro')" id="btn-pomodoro" class="pixel-btn px-4 py-2 text-sm pixel-font">
+        3. Pomodoro States
+      </button>
+      <button onclick="switchTab('tab-crud')" id="btn-crud" class="pixel-btn px-4 py-2 text-sm pixel-font">
+        4. Task CRUD Engine
+      </button>
+      <button onclick="switchTab('tab-wireframe')" id="btn-wireframe" class="pixel-btn px-4 py-2 text-sm pixel-font">
+        5. Interactive Wireframe
+      </button>
+    </nav>
+
+    <!-- TAB 1: System Architecture Diagram -->
+    <section id="tab-architecture" class="tab-pane space-y-4">
+      <div class="pixel-box p-6 bg-[#26243d]">
+        <div class="flex items-center justify-between border-b-2 border-[#0a0912] pb-3 mb-4">
+          <h2 class="pixel-font text-sm text-[#f49ac2]">System Architecture & Data Flow</h2>
+          <span class="text-xs text-[#9990b8]">Multi-Tier Client & Cloud Sync</span>
+        </div>
+
+        <!-- SVG Architecture Diagram -->
+        <div class="w-full overflow-x-auto p-2 bg-[#141324] border-2 border-[#0a0912]">
+          <svg viewBox="0 0 950 480" class="w-full min-w-[850px]" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="pixelGrid" width="20" height="20" patternUnits="userSpaceOnUse">
+                <rect width="20" height="20" fill="#141324"/>
+                <circle cx="2" cy="2" r="1" fill="#222034"/>
+              </pattern>
+            </defs>
+            <rect width="950" height="480" fill="url(#pixelGrid)" />
+
+            <!-- LAYER 1: Presentation Layer -->
+            <rect x="30" y="30" width="890" height="110" fill="#26243d" stroke="#0a0912" stroke-width="3"/>
+            <text x="50" y="55" fill="#f49ac2" font-family="'Press Start 2P'" font-size="11">LAYER 1: USER INTERFACE (VITE + REACT + TAILWIND)</text>
+
+            <rect x="50" y="70" width="180" height="55" fill="#1a192b" stroke="#3f395b" stroke-width="2"/>
+            <text x="65" y="93" fill="#f6eedb" font-family="'VT323'" font-size="16">🐱 Anime Pixel Mascot</text>
+            <text x="65" y="112" fill="#9990b8" font-family="'VT323'" font-size="13">Study / Nap / Celebrate Sprites</text>
+
+            <rect x="250" y="70" width="200" height="55" fill="#1a192b" stroke="#3f395b" stroke-width="2"/>
+            <text x="265" y="93" fill="#f6eedb" font-family="'VT323'" font-size="16">⏱ Pomodoro Focus Bar</text>
+            <text x="265" y="112" fill="#9990b8" font-family="'VT323'" font-size="13">LED Display & Quick Modals</text>
+
+            <rect x="470" y="70" width="210" height="55" fill="#1a192b" stroke="#3f395b" stroke-width="2"/>
+            <text x="485" y="93" fill="#f6eedb" font-family="'VT323'" font-size="16">📋 Daily Task Manager</text>
+            <text x="485" y="112" fill="#9990b8" font-family="'VT323'" font-size="13">Checkboxes, Priorities, Tags</text>
+
+            <rect x="700" y="70" width="200" height="55" fill="#1a192b" stroke="#3f395b" stroke-width="2"/>
+            <text x="715" y="93" fill="#f6eedb" font-family="'VT323'" font-size="16">📅 Pixel Calendar View</text>
+            <text x="715" y="112" fill="#9990b8" font-family="'VT323'" font-size="13">Monthly Grid & Task Dots</text>
+
+            <path d="M 140 140 L 140 180" stroke="#f49ac2" stroke-width="3" stroke-dasharray="4 4"/>
+            <path d="M 350 140 L 350 180" stroke="#8bd5ca" stroke-width="3" stroke-dasharray="4 4"/>
+            <path d="M 575 140 L 575 180" stroke="#f9c846" stroke-width="3" stroke-dasharray="4 4"/>
+            <path d="M 800 140 L 800 180" stroke="#8bd5ca" stroke-width="3" stroke-dasharray="4 4"/>
+
+            <!-- LAYER 2: State & Core Engine -->
+            <rect x="30" y="180" width="890" height="120" fill="#222034" stroke="#0a0912" stroke-width="3"/>
+            <text x="50" y="205" fill="#8bd5ca" font-family="'Press Start 2P'" font-size="11">LAYER 2: CLIENT APPLICATION STATE & LOGIC ENGINE</text>
+
+            <rect x="50" y="220" width="200" height="65" fill="#12111d" stroke="#3f395b" stroke-width="2"/>
+            <text x="65" y="245" fill="#8bd5ca" font-family="'VT323'" font-size="16">⚙ Timer State Machine</text>
+            <text x="65" y="265" fill="#9990b8" font-family="'VT323'" font-size="13">Work/Break Durations, Ticker</text>
+
+            <rect x="270" y="220" width="200" height="65" fill="#12111d" stroke="#3f395b" stroke-width="2"/>
+            <text x="285" y="245" fill="#8bd5ca" font-family="'VT323'" font-size="16">📦 Task CRUD Store</text>
+            <text x="285" y="265" fill="#9990b8" font-family="'VT323'" font-size="13">Date-keyed tasks, filters</text>
+
+            <rect x="490" y="220" width="200" height="65" fill="#12111d" stroke="#3f395b" stroke-width="2"/>
+            <text x="505" y="245" fill="#8bd5ca" font-family="'VT323'" font-size="16">🎵 Web Audio Synthesizer</text>
+            <text x="505" y="265" fill="#9990b8" font-family="'VT323'" font-size="13">8-Bit Retro Chimes & Lofi</text>
+
+            <rect x="710" y="220" width="190" height="65" fill="#12111d" stroke="#3f395b" stroke-width="2"/>
+            <text x="725" y="245" fill="#8bd5ca" font-family="'VT323'" font-size="16">🏆 Habit & Streak Tracker</text>
+            <text x="725" y="265" fill="#9990b8" font-family="'VT323'" font-size="13">Daily streaks & focus stats</text>
+
+            <path d="M 370 300 L 370 340" stroke="#f9c846" stroke-width="3"/>
+            <path d="M 600 300 L 600 340" stroke="#f9c846" stroke-width="3"/>
+
+            <!-- LAYER 3: Data Storage & Synchronization -->
+            <rect x="30" y="340" width="890" height="110" fill="#1a192b" stroke="#0a0912" stroke-width="3"/>
+            <text x="50" y="365" fill="#f9c846" font-family="'Press Start 2P'" font-size="11">LAYER 3: PERSISTENCE & MULTI-DEVICE SYNC</text>
+
+            <rect x="150" y="380" width="280" height="55" fill="#26243d" stroke="#8bd5ca" stroke-width="2"/>
+            <text x="170" y="403" fill="#8bd5ca" font-family="'VT323'" font-size="16">💾 Offline LocalStorage Engine</text>
+            <text x="170" y="422" fill="#9990b8" font-family="'VT323'" font-size="13">Zero latency, offline-first, instant save</text>
+
+            <path d="M 430 407 L 510 407" stroke="#f49ac2" stroke-width="3" stroke-dasharray="4 4"/>
+            <text x="440" y="398" fill="#f49ac2" font-family="'VT323'" font-size="12">Auto-Sync</text>
+
+            <rect x="510" y="380" width="300" height="55" fill="#26243d" stroke="#f49ac2" stroke-width="2"/>
+            <text x="530" y="403" fill="#f49ac2" font-family="'VT323'" font-size="16">☁ Cloud Database (Supabase / Firebase)</text>
+            <text x="530" y="422" fill="#9990b8" font-family="'VT323'" font-size="13">Multi-device real-time sync & backup</text>
+          </svg>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 text-sm">
+          <div class="pixel-inset p-3">
+            <h4 class="text-[#f49ac2] pixel-font text-xs mb-1">🎮 Client First</h4>
+            <p class="text-[#9990b8]">React + Vite powers sub-millisecond tactile interactions without server lag.</p>
+          </div>
+          <div class="pixel-inset p-3">
+            <h4 class="text-[#8bd5ca] pixel-font text-xs mb-1">⚡ Dual Persistence</h4>
+            <p class="text-[#9990b8]">Works immediately offline with LocalStorage, synchronizing with Supabase in the background.</p>
+          </div>
+          <div class="pixel-inset p-3">
+            <h4 class="text-[#f9c846] pixel-font text-xs mb-1">🔊 Sound & Sprite</h4>
+            <p class="text-[#9990b8]">Procedural 8-bit audio and sprite state transitions tied cleanly to Pomodoro intervals.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: User Study Workflow Flowchart -->
+    <section id="tab-userflow" class="tab-pane hidden space-y-4">
+      <div class="pixel-box p-6 bg-[#26243d]">
+        <div class="flex items-center justify-between border-b-2 border-[#0a0912] pb-3 mb-4">
+          <h2 class="pixel-font text-sm text-[#8bd5ca]">Daily Study Journey & User Workflow</h2>
+          <span class="text-xs text-[#9990b8]">From Morning Planning to Night Wrap-up</span>
+        </div>
+
+        <div class="space-y-4">
+          <div class="flex flex-col md:flex-row items-center gap-4">
+            <div class="pixel-box bg-[#1a192b] p-3 text-center w-full md:w-48 shrink-0">
+              <span class="pixel-font text-[10px] text-[#f49ac2] block">PHASE 1</span>
+              <span class="text-lg text-[#f6eedb]">🌅 Morning Check-in</span>
+            </div>
+            <div class="text-[#f49ac2] text-xl hidden md:block">➔</div>
+            <div class="pixel-inset p-4 w-full">
+              <div class="flex items-center justify-between mb-1">
+                <span class="pixel-font text-xs text-[#8bd5ca]">1. Review Calendar & Add Today's Jobs</span>
+                <span class="text-xs text-[#9990b8]">Calendar & Task List</span>
+              </div>
+              <p class="text-sm text-[#9990b8]">
+                Open app, inspect current date on the pixel calendar. See existing deadlines, add new tasks with priority badges (🔴 High, 🟡 Medium, 🟢 Low), and assign estimated Pomodoro cycles.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex flex-col md:flex-row items-center gap-4">
+            <div class="pixel-box bg-[#1a192b] p-3 text-center w-full md:w-48 shrink-0">
+              <span class="pixel-font text-[10px] text-[#8bd5ca] block">PHASE 2</span>
+              <span class="text-lg text-[#f6eedb]">⏱ Deep Focus Mode</span>
+            </div>
+            <div class="text-[#8bd5ca] text-xl hidden md:block">➔</div>
+            <div class="pixel-inset p-4 w-full">
+              <div class="flex items-center justify-between mb-1">
+                <span class="pixel-font text-xs text-[#f9c846]">2. Pomodoro Timer Execution</span>
+                <span class="text-xs text-[#9990b8]">Focus Timer & Companion</span>
+              </div>
+              <p class="text-sm text-[#9990b8]">
+                Select active task. Click <strong class="text-[#f6eedb]">START TIMER</strong>. The anime pixel companion switches from idle to typing/studying. Optional lofi rain audio plays. Stepped HP progress bar drains.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex flex-col md:flex-row items-center gap-4">
+            <div class="pixel-box bg-[#1a192b] p-3 text-center w-full md:w-48 shrink-0">
+              <span class="pixel-font text-[10px] text-[#f9c846] block">PHASE 3</span>
+              <span class="text-lg text-[#f6eedb]">☕ Break & Recovery</span>
+            </div>
+            <div class="text-[#f9c846] text-xl hidden md:block">➔</div>
+            <div class="pixel-inset p-4 w-full">
+              <div class="flex items-center justify-between mb-1">
+                <span class="pixel-font text-xs text-[#f49ac2]">3. 8-Bit Chime & Short Break</span>
+                <span class="text-xs text-[#9990b8]">Break Mode</span>
+              </div>
+              <p class="text-sm text-[#9990b8]">
+                Timer hits 00:00. Retro chime rings. System switches to 5-minute break (customizable). Mascot drinks tea or naps with floating <span class="text-[#f9c846]">Zzz</span>.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex flex-col md:flex-row items-center gap-4">
+            <div class="pixel-box bg-[#1a192b] p-3 text-center w-full md:w-48 shrink-0">
+              <span class="pixel-font text-[10px] text-[#8bd5ca] block">PHASE 4</span>
+              <span class="text-lg text-[#f6eedb]">🎉 Task Completion</span>
+            </div>
+            <div class="text-[#8bd5ca] text-xl hidden md:block">➔</div>
+            <div class="pixel-inset p-4 w-full">
+              <div class="flex items-center justify-between mb-1">
+                <span class="pixel-font text-xs text-[#8bd5ca]">4. Check-off & Pixel Fireworks</span>
+                <span class="text-xs text-[#9990b8]">Celebration & Streaks</span>
+              </div>
+              <p class="text-sm text-[#9990b8]">
+                Check off task: pixel sparkle confetti triggers, level-up sound plays, completed progress bar updates. Calendar cell for today gains a completion star.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex flex-col md:flex-row items-center gap-4">
+            <div class="pixel-box bg-[#1a192b] p-3 text-center w-full md:w-48 shrink-0">
+              <span class="pixel-font text-[10px] text-[#ea7679] block">PHASE 5</span>
+              <span class="text-lg text-[#f6eedb]">🌙 Night Wrap-up</span>
+            </div>
+            <div class="text-[#ea7679] text-xl hidden md:block">➔</div>
+            <div class="pixel-inset p-4 w-full">
+              <div class="flex items-center justify-between mb-1">
+                <span class="pixel-font text-xs text-[#f9c846]">5. Streak Calculation & Cloud Sync</span>
+                <span class="text-xs text-[#9990b8]">Supabase Sync & Stats</span>
+              </div>
+              <p class="text-sm text-[#9990b8]">
+                Daily streak count increments. All completed session logs and task history sync securely to Supabase for multi-device continuity.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: Pomodoro State Machine -->
+    <section id="tab-pomodoro" class="tab-pane hidden space-y-4">
+      <div class="pixel-box p-6 bg-[#26243d]">
+        <div class="flex items-center justify-between border-b-2 border-[#0a0912] pb-3 mb-4">
+          <h2 class="pixel-font text-sm text-[#f9c846]">Pomodoro Timer State Machine</h2>
+          <span class="text-xs text-[#9990b8]">Customizable Work & Break Intervals</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="pixel-inset p-4 border-l-4 border-l-[#9990b8]">
+            <div class="flex justify-between items-center mb-2">
+              <span class="pixel-font text-xs text-[#9990b8]">STATE 1: IDLE / READY</span>
+              <span class="text-xs px-2 py-0.5 bg-[#141324] text-[#9990b8]">Default</span>
+            </div>
+            <div class="text-2xl text-[#f6eedb] mb-1 font-mono">25:00</div>
+            <p class="text-xs text-[#9990b8] mb-3">Timer is reset and waiting for user input.</p>
+            <div class="text-xs space-y-1 text-[#f6eedb] bg-[#141324] p-2 border border-[#0a0912]">
+              <div><strong>Mascot:</strong> Sitting calmly, looking at user</div>
+              <div><strong>Available Action:</strong> [START], [SETTINGS]</div>
+              <div><strong>Transition:</strong> Click [START] ➔ <span class="text-[#8bd5ca]">FOCUSING</span></div>
+            </div>
+          </div>
+
+          <div class="pixel-inset p-4 border-l-4 border-l-[#8bd5ca]">
+            <div class="flex justify-between items-center mb-2">
+              <span class="pixel-font text-xs text-[#8bd5ca]">STATE 2: FOCUS MODE</span>
+              <span class="text-xs px-2 py-0.5 bg-[#8bd5ca] text-[#0a0912] font-bold">Active</span>
+            </div>
+            <div class="text-2xl text-[#8bd5ca] mb-1 font-mono">18:42</div>
+            <p class="text-xs text-[#9990b8] mb-3">Work session counting down (1 - 120 mins customizable).</p>
+            <div class="text-xs space-y-1 text-[#f6eedb] bg-[#141324] p-2 border border-[#0a0912]">
+              <div><strong>Mascot:</strong> Typing on keyboard, focused expression</div>
+              <div><strong>Available Actions:</strong> [PAUSE], [RESET], [SKIP]</div>
+              <div><strong>Transition:</strong> Time = 00:00 ➔ <span class="text-[#f9c846]">BREAK</span></div>
+            </div>
+          </div>
+
+          <div class="pixel-inset p-4 border-l-4 border-l-[#f9c846]">
+            <div class="flex justify-between items-center mb-2">
+              <span class="pixel-font text-xs text-[#f9c846]">STATE 3: SHORT BREAK</span>
+              <span class="text-xs px-2 py-0.5 bg-[#f9c846] text-[#0a0912] font-bold">5 Min</span>
+            </div>
+            <div class="text-2xl text-[#f9c846] mb-1 font-mono">04:30</div>
+            <p class="text-xs text-[#9990b8] mb-3">Rest interval after a focus block (1 - 30 mins customizable).</p>
+            <div class="text-xs space-y-1 text-[#f6eedb] bg-[#141324] p-2 border border-[#0a0912]">
+              <div><strong>Mascot:</strong> Drinking boba tea, floating pixel hearts</div>
+              <div><strong>Audio:</strong> Gentle 8-bit school bell chime</div>
+              <div><strong>Transition:</strong> Time = 00:00 ➔ <span class="text-[#8bd5ca]">NEXT FOCUS</span></div>
+            </div>
+          </div>
+
+          <div class="pixel-inset p-4 border-l-4 border-l-[#f49ac2]">
+            <div class="flex justify-between items-center mb-2">
+              <span class="pixel-font text-xs text-[#f49ac2]">STATE 4: LONG BREAK</span>
+              <span class="text-xs px-2 py-0.5 bg-[#f49ac2] text-[#0a0912] font-bold">Cycle 4</span>
+            </div>
+            <div class="text-2xl text-[#f49ac2] mb-1 font-mono">15:00</div>
+            <p class="text-xs text-[#9990b8] mb-3">Extended rest triggered every 4 consecutive study sessions.</p>
+            <div class="text-xs space-y-1 text-[#f6eedb] bg-[#141324] p-2 border border-[#0a0912]">
+              <div><strong>Mascot:</strong> Sleeping peacefully with floating Zzz</div>
+              <div><strong>Progress:</strong> Pomodoro counter resets to 0/4</div>
+              <div><strong>Transition:</strong> Time = 00:00 ➔ <span class="text-[#9990b8]">IDLE</span></div>
+            </div>
+          </div>
+
+          <div class="pixel-inset p-4 border-l-4 border-l-[#ea7679]">
+            <div class="flex justify-between items-center mb-2">
+              <span class="pixel-font text-xs text-[#ea7679]">STATE 5: PAUSED</span>
+              <span class="text-xs px-2 py-0.5 bg-[#ea7679] text-[#0a0912] font-bold">Frozen</span>
+            </div>
+            <div class="text-2xl text-[#ea7679] mb-1 font-mono">--:--</div>
+            <p class="text-xs text-[#9990b8] mb-3">Timer temporarily held without losing current progress.</p>
+            <div class="text-xs space-y-1 text-[#f6eedb] bg-[#141324] p-2 border border-[#0a0912]">
+              <div><strong>Mascot:</strong> Pauses animation, looks inquisitive</div>
+              <div><strong>Available Actions:</strong> [RESUME], [RESET]</div>
+              <div><strong>Transition:</strong> Click [RESUME] ➔ Returns to active</div>
+            </div>
+          </div>
+
+          <div class="pixel-inset p-4 border-l-4 border-l-[#8bd5ca]">
+            <div class="flex justify-between items-center mb-2">
+              <span class="pixel-font text-xs text-[#8bd5ca]">SETTINGS MODAL</span>
+              <span class="text-xs px-2 py-0.5 bg-[#141324] text-[#8bd5ca]">Custom</span>
+            </div>
+            <div class="text-lg text-[#f6eedb] mb-1 font-mono">⚙ Timing Config</div>
+            <p class="text-xs text-[#9990b8] mb-3">Live adjustment of timer parameters.</p>
+            <div class="text-xs space-y-1 text-[#f6eedb] bg-[#141324] p-2 border border-[#0a0912]">
+              <div>• Focus Time: [ 25 ] mins</div>
+              <div>• Short Break: [ 05 ] mins</div>
+              <div>• Long Break:  [ 15 ] mins</div>
+              <div>• Sound Volume: 80% [🔊]</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: Daily Jobs CRUD Lifecycle -->
+    <section id="tab-crud" class="tab-pane hidden space-y-4">
+      <div class="pixel-box p-6 bg-[#26243d]">
+        <div class="flex items-center justify-between border-b-2 border-[#0a0912] pb-3 mb-4">
+          <h2 class="pixel-font text-sm text-[#f49ac2]">Daily Tasks / Jobs CRUD Engine</h2>
+          <span class="text-xs text-[#9990b8]">Calendar-Indexed State Store</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="pixel-inset p-4">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="w-3 h-3 bg-[#8bd5ca] inline-block"></span>
+              <h3 class="pixel-font text-xs text-[#8bd5ca]">1. CREATE (Add Job)</h3>
+            </div>
+            <p class="text-xs text-[#9990b8] mb-3">
+              User enters task title in header bar or clicks any date cell on the calendar.
+            </p>
+            <div class="bg-[#141324] p-3 text-xs font-mono space-y-1 border border-[#0a0912]">
+              <div class="text-[#f9c846]">// Task Schema</div>
+              <div>id: "task-1730472000"</div>
+              <div>title: "Complete Calculus Chapter 4"</div>
+              <div>date: "2026-11-01" <span class="text-[#8bd5ca]">// YYYY-MM-DD</span></div>
+              <div>priority: "high" <span class="text-[#ea7679]">// 🔴 red dot</span></div>
+              <div>completed: false</div>
+              <div>estimatedPomodoros: 3</div>
+            </div>
+          </div>
+
+          <div class="pixel-inset p-4">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="w-3 h-3 bg-[#f9c846] inline-block"></span>
+              <h3 class="pixel-font text-xs text-[#f9c846]">2. READ (Daily & Calendar Views)</h3>
+            </div>
+            <p class="text-xs text-[#9990b8] mb-3">
+              Tasks are indexed by date key. Selecting any date in the calendar instantly queries tasks for that specific day.
+            </p>
+            <div class="bg-[#141324] p-3 text-xs font-mono space-y-1 border border-[#0a0912]">
+              <div>• Filter tabs: [All], [Pending], [Completed]</div>
+              <div>• Calendar query: getTasksByDate(selectedDate)</div>
+              <div>• Month dot badges: renderBadgesForMonth(currentMonth)</div>
+              <div>• Progress calculation: (completed / total) * 100</div>
+            </div>
+          </div>
+
+          <div class="pixel-inset p-4">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="w-3 h-3 bg-[#f49ac2] inline-block"></span>
+              <h3 class="pixel-font text-xs text-[#f49ac2]">3. UPDATE (Edit & Complete)</h3>
+            </div>
+            <p class="text-xs text-[#9990b8] mb-3">
+              In-place title editing, toggle checkbox, or drag-and-drop to reschedule to another date.
+            </p>
+            <div class="bg-[#141324] p-3 text-xs font-mono space-y-1 border border-[#0a0912]">
+              <div>• Checkbox toggle: completed = !completed</div>
+              <div>• Triggers level-up sound & pixel confetti</div>
+              <div>• Reorder tasks within day list via up/down buttons</div>
+              <div>• Reschedule: update task.date to target day</div>
+            </div>
+          </div>
+
+          <div class="pixel-inset p-4">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="w-3 h-3 bg-[#ea7679] inline-block"></span>
+              <h3 class="pixel-font text-xs text-[#ea7679]">4. DELETE (Remove with Undo)</h3>
+            </div>
+            <p class="text-xs text-[#9990b8] mb-3">
+              Safeguards against accidental task deletion with an instant retro undo toast bar.
+            </p>
+            <div class="bg-[#141324] p-3 text-xs font-mono space-y-1 border border-[#0a0912]">
+              <div>• Click [X] or Trash icon</div>
+              <div>• Task removed from view immediately</div>
+              <div>• 5-second retro toast popup: "Task Deleted. [UNDO]"</div>
+              <div>• Permanent purge committed after toast expires</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: Interactive Wireframe Prototype -->
+    <section id="tab-wireframe" class="tab-pane hidden space-y-4">
+      <div class="pixel-box p-4 md:p-6 bg-[#26243d]">
+        <div class="flex items-center justify-between border-b-2 border-[#0a0912] pb-3 mb-4">
+          <div>
+            <h2 class="pixel-font text-sm text-[#8bd5ca]">Interactive 3-Panel Study Dashboard Wireframe</h2>
+            <p class="text-xs text-[#9990b8] mt-0.5">Click buttons, toggle checkboxes, or switch timer modes below!</p>
+          </div>
+          <span class="pixel-font text-[10px] bg-[#1a192b] text-[#f49ac2] px-3 py-1 border border-[#0a0912]">
+            LIVE PREVIEW
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          <!-- Left Panel: Pomodoro & Mascot -->
+          <div class="lg:col-span-4 pixel-box bg-[#1a192b] p-4 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between border-b border-[#0a0912] pb-2 mb-3">
+                <span class="pixel-font text-xs text-[#f49ac2]">★ FOCUS BUDDY</span>
+                <span class="text-xs text-[#8bd5ca] font-mono">Streak: 5🔥</span>
+              </div>
+
+              <div class="pixel-inset p-3 bg-[#141324] flex flex-col items-center justify-center text-center mb-4">
+                <div id="demo-mascot" class="w-16 h-16 animate-bob mb-2">
+                  <svg viewBox="0 0 16 16" class="w-full h-full" fill="none">
+                    <rect x="3" y="2" width="2" height="3" fill="#f49ac2"/>
+                    <rect x="11" y="2" width="2" height="3" fill="#f49ac2"/>
+                    <rect x="4" y="4" width="8" height="8" fill="#f6eedb"/>
+                    <rect x="5" y="7" width="2" height="2" fill="#141324"/>
+                    <rect x="9" y="7" width="2" height="2" fill="#141324"/>
+                    <rect x="7" y="9" width="2" height="1" fill="#ea7679"/>
+                    <rect x="2" y="8" width="2" height="1" fill="#9990b8"/>
+                    <rect x="12" y="8" width="2" height="1" fill="#9990b8"/>
+                    <rect x="5" y="12" width="6" height="3" fill="#8bd5ca"/>
+                  </svg>
+                </div>
+                <div id="demo-mascot-status" class="pixel-font text-[10px] text-[#f6eedb]">
+                  "Ready to study with you!"
+                </div>
+              </div>
+
+              <div class="flex gap-1 mb-3">
+                <button onclick="setTimerMode('focus')" id="mode-focus" class="pixel-btn text-xs px-2 py-1 flex-1 pixel-font active-tab">Focus</button>
+                <button onclick="setTimerMode('short')" id="mode-short" class="pixel-btn text-xs px-2 py-1 flex-1 pixel-font">Short</button>
+                <button onclick="setTimerMode('long')" id="mode-long" class="pixel-btn text-xs px-2 py-1 flex-1 pixel-font">Long</button>
+              </div>
+
+              <div class="pixel-inset p-4 bg-[#12111d] text-center mb-3">
+                <div id="demo-timer" class="text-4xl md:text-5xl font-mono text-[#f6eedb] tracking-wider">
+                  25:00
+                </div>
+                <div class="w-full h-3 bg-[#0a0912] border border-[#3f395b] mt-2 p-0.5">
+                  <div id="demo-hp-bar" class="h-full bg-[#8bd5ca] transition-all duration-300" style="width: 100%;"></div>
+                </div>
+              </div>
+
+              <div class="flex gap-2 mb-3">
+                <button onclick="toggleDemoTimer()" id="btn-demo-timer" class="pixel-btn flex-1 py-2 text-xs pixel-font bg-[#8bd5ca] text-[#0a0912]">
+                  START
+                </button>
+                <button onclick="resetDemoTimer()" class="pixel-btn px-3 py-2 text-xs pixel-font">
+                  RESET
+                </button>
+              </div>
+            </div>
+
+            <div class="pixel-inset p-2 text-xs text-[#9990b8] flex items-center justify-between">
+              <span>Duration Config:</span>
+              <div class="flex items-center gap-1">
+                <button onclick="adjustDemoTime(-5)" class="pixel-btn px-1.5 py-0.5 text-xs">-5m</button>
+                <span id="demo-duration-label" class="text-[#f6eedb] font-mono px-1">25m</span>
+                <button onclick="adjustDemoTime(5)" class="pixel-btn px-1.5 py-0.5 text-xs">+5m</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Middle Panel: Today's Jobs CRUD -->
+          <div class="lg:col-span-5 pixel-box bg-[#1a192b] p-4 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between border-b border-[#0a0912] pb-2 mb-3">
+                <div class="flex items-center gap-2">
+                  <span class="pixel-font text-xs text-[#8bd5ca]">TODAY'S JOBS</span>
+                  <span class="text-xs text-[#9990b8] font-mono">(Nov 01)</span>
+                </div>
+                <span id="demo-task-count" class="text-xs text-[#f9c846] font-mono">1/3 Done</span>
+              </div>
+
+              <div class="flex gap-2 mb-3">
+                <input id="demo-new-task-input" type="text" placeholder="Add study task..." 
+                  class="pixel-inset bg-[#12111d] text-sm text-[#f6eedb] px-3 py-1.5 flex-1 focus:outline-none focus:border-[#f49ac2]"
+                  onkeydown="if(event.key === 'Enter') addDemoTask()">
+                <button onclick="addDemoTask()" class="pixel-btn px-3 py-1 text-xs pixel-font text-[#f6eedb]">
+                  + ADD
+                </button>
+              </div>
+
+              <div id="demo-task-list" class="space-y-2 max-h-72 overflow-y-auto pr-1">
+                <div class="pixel-inset p-2 bg-[#222034] flex items-center justify-between gap-2 group">
+                  <div class="flex items-center gap-2 flex-1">
+                    <input type="checkbox" checked onchange="toggleTaskDone(this)" class="w-4 h-4 cursor-pointer">
+                    <span class="text-sm line-through text-[#9990b8]">Review SE2107 Project Plan</span>
+                  </div>
+                  <span class="text-[10px] bg-[#ea7679] text-[#0a0912] px-1 font-bold">HIGH</span>
+                  <button onclick="this.parentElement.remove(); updateTaskStats();" class="text-xs text-[#ea7679] hover:underline px-1">✕</button>
+                </div>
+                <div class="pixel-inset p-2 bg-[#222034] flex items-center justify-between gap-2 group">
+                  <div class="flex items-center gap-2 flex-1">
+                    <input type="checkbox" onchange="toggleTaskDone(this)" class="w-4 h-4 cursor-pointer">
+                    <span class="text-sm text-[#f6eedb]">Implement React + Vite Scaffolding</span>
+                  </div>
+                  <span class="text-[10px] bg-[#f9c846] text-[#0a0912] px-1 font-bold">MED</span>
+                  <button onclick="this.parentElement.remove(); updateTaskStats();" class="text-xs text-[#ea7679] hover:underline px-1">✕</button>
+                </div>
+                <div class="pixel-inset p-2 bg-[#222034] flex items-center justify-between gap-2 group">
+                  <div class="flex items-center gap-2 flex-1">
+                    <input type="checkbox" onchange="toggleTaskDone(this)" class="w-4 h-4 cursor-pointer">
+                    <span class="text-sm text-[#f6eedb]">Practice Calculus Problem Set 3</span>
+                  </div>
+                  <span class="text-[10px] bg-[#8bd5ca] text-[#0a0912] px-1 font-bold">LOW</span>
+                  <button onclick="this.parentElement.remove(); updateTaskStats();" class="text-xs text-[#ea7679] hover:underline px-1">✕</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="pixel-inset p-2 mt-4 flex items-center justify-between text-xs text-[#9990b8]">
+              <span>Progress Bar:</span>
+              <div class="w-32 h-2.5 bg-[#0a0912] border border-[#3f395b] p-0.5">
+                <div id="demo-tasks-progress-bar" class="h-full bg-[#f49ac2]" style="width: 33%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Panel: Pixel Calendar -->
+          <div class="lg:col-span-3 pixel-box bg-[#1a192b] p-4 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between border-b border-[#0a0912] pb-2 mb-3">
+                <span class="pixel-font text-xs text-[#f9c846]">📅 CALENDAR</span>
+                <span class="text-xs text-[#f6eedb] font-mono">NOV 2026</span>
+              </div>
+
+              <div class="grid grid-cols-7 gap-1 text-center text-[10px] text-[#9990b8] mb-1 font-mono">
+                <div>Su</div><div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div>
+              </div>
+
+              <div class="grid grid-cols-7 gap-1 text-center text-xs font-mono">
+                <div onclick="selectCalendarDate(this, 1)" class="p-1 pixel-btn active-tab relative">
+                  1
+                  <span class="w-1.5 h-1.5 bg-[#ea7679] block mx-auto mt-0.5"></span>
+                </div>
+                <div onclick="selectCalendarDate(this, 2)" class="p-1 pixel-btn relative">
+                  2
+                  <span class="w-1.5 h-1.5 bg-[#8bd5ca] block mx-auto mt-0.5"></span>
+                </div>
+                <div onclick="selectCalendarDate(this, 3)" class="p-1 pixel-btn relative">3</div>
+                <div onclick="selectCalendarDate(this, 4)" class="p-1 pixel-btn relative">
+                  4
+                  <span class="w-1.5 h-1.5 bg-[#f9c846] block mx-auto mt-0.5"></span>
+                </div>
+                <div onclick="selectCalendarDate(this, 5)" class="p-1 pixel-btn relative">5</div>
+                <div onclick="selectCalendarDate(this, 6)" class="p-1 pixel-btn relative">6</div>
+                <div onclick="selectCalendarDate(this, 7)" class="p-1 pixel-btn relative">7</div>
+                <div onclick="selectCalendarDate(this, 8)" class="p-1 pixel-btn relative">8</div>
+                <div onclick="selectCalendarDate(this, 9)" class="p-1 pixel-btn relative">9</div>
+                <div onclick="selectCalendarDate(this, 10)" class="p-1 pixel-btn relative">
+                  10
+                  <span class="w-1.5 h-1.5 bg-[#ea7679] block mx-auto mt-0.5"></span>
+                </div>
+                <div onclick="selectCalendarDate(this, 11)" class="p-1 pixel-btn relative">11</div>
+                <div onclick="selectCalendarDate(this, 12)" class="p-1 pixel-btn relative">12</div>
+                <div onclick="selectCalendarDate(this, 13)" class="p-1 pixel-btn relative">13</div>
+                <div onclick="selectCalendarDate(this, 14)" class="p-1 pixel-btn relative">14</div>
+                <div onclick="selectCalendarDate(this, 15)" class="p-1 pixel-btn relative">15</div>
+                <div onclick="selectCalendarDate(this, 16)" class="p-1 pixel-btn relative">16</div>
+                <div onclick="selectCalendarDate(this, 17)" class="p-1 pixel-btn relative">17</div>
+                <div onclick="selectCalendarDate(this, 18)" class="p-1 pixel-btn relative">18</div>
+                <div onclick="selectCalendarDate(this, 19)" class="p-1 pixel-btn relative">19</div>
+                <div onclick="selectCalendarDate(this, 20)" class="p-1 pixel-btn relative">20</div>
+                <div onclick="selectCalendarDate(this, 21)" class="p-1 pixel-btn relative">21</div>
+                <div onclick="selectCalendarDate(this, 22)" class="p-1 pixel-btn relative">22</div>
+                <div onclick="selectCalendarDate(this, 23)" class="p-1 pixel-btn relative">23</div>
+                <div onclick="selectCalendarDate(this, 24)" class="p-1 pixel-btn relative">24</div>
+                <div onclick="selectCalendarDate(this, 25)" class="p-1 pixel-btn relative">25</div>
+                <div onclick="selectCalendarDate(this, 26)" class="p-1 pixel-btn relative">26</div>
+                <div onclick="selectCalendarDate(this, 27)" class="p-1 pixel-btn relative">27</div>
+                <div onclick="selectCalendarDate(this, 28)" class="p-1 pixel-btn relative">28</div>
+                <div onclick="selectCalendarDate(this, 29)" class="p-1 pixel-btn relative">29</div>
+                <div onclick="selectCalendarDate(this, 30)" class="p-1 pixel-btn relative">30</div>
+              </div>
+
+              <div class="mt-4 pt-2 border-t border-[#0a0912] space-y-1 text-[11px] text-[#9990b8]">
+                <div class="flex items-center gap-2">
+                  <span class="w-2 h-2 bg-[#ea7679] inline-block"></span>
+                  <span>High Priority Tasks</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="w-2 h-2 bg-[#f9c846] inline-block"></span>
+                  <span>Medium Priority</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="w-2 h-2 bg-[#8bd5ca] inline-block"></span>
+                  <span>Completed Day</span>
+                </div>
+              </div>
+            </div>
+
+            <div id="demo-selected-date-banner" class="pixel-inset p-2 mt-3 text-center text-xs text-[#f49ac2]">
+              Viewing: Nov 01 (Today)
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="pixel-box p-4 bg-[#1a192b] flex flex-col md:flex-row items-center justify-between text-xs text-[#9990b8] gap-2">
+      <div class="flex items-center gap-2">
+        <span class="text-[#f49ac2]">★</span>
+        <span>Generated for <strong>daily-reminder</strong> repository</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <span>Conforms to <strong class="text-[#f6eedb]">style.md</strong></span>
+        <span>React + Vite + Supabase Spec</span>
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-pane').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('nav button').forEach(el => el.classList.remove('active-tab'));
+
+      const activePane = document.getElementById(tabId);
+      if (activePane) activePane.classList.remove('hidden');
+
+      const btnId = 'btn-' + tabId.replace('tab-', '');
+      const activeBtn = document.getElementById(btnId);
+      if (activeBtn) activeBtn.classList.add('active-tab');
+    }
+
+    let timerMinutes = 25;
+    let timerSeconds = 0;
+    let timerRunning = false;
+    let timerInterval = null;
+    let currentMode = 'focus';
+
+    function updateTimerDisplay() {
+      const minStr = String(timerMinutes).padStart(2, '0');
+      const secStr = String(timerSeconds).padStart(2, '0');
+      document.getElementById('demo-timer').innerText = `${minStr}:${secStr}`;
+      
+      const totalSeconds = currentMode === 'focus' ? 25 * 60 : (currentMode === 'short' ? 5 * 60 : 15 * 60);
+      const remainingSeconds = timerMinutes * 60 + timerSeconds;
+      const percentage = Math.max(0, Math.min(100, (remainingSeconds / totalSeconds) * 100));
+      document.getElementById('demo-hp-bar').style.width = percentage + '%';
+    }
+
+    function toggleDemoTimer() {
+      const btn = document.getElementById('btn-demo-timer');
+      const mascotStatus = document.getElementById('demo-mascot-status');
+
+      if (!timerRunning) {
+        timerRunning = true;
+        btn.innerText = 'PAUSE';
+        btn.classList.remove('bg-[#8bd5ca]');
+        btn.classList.add('bg-[#f9c846]');
+        mascotStatus.innerText = '"Focusing hard with you! ✏"';
+
+        timerInterval = setInterval(() => {
+          if (timerSeconds === 0) {
+            if (timerMinutes === 0) {
+              clearInterval(timerInterval);
+              timerRunning = false;
+              btn.innerText = 'START';
+              mascotStatus.innerText = '"Great job! Time for tea! 🍵"';
+              alert('⏰ Pomodoro session complete!');
+              return;
+            }
+            timerMinutes--;
+            timerSeconds = 59;
+          } else {
+            timerSeconds--;
+          }
+          updateTimerDisplay();
+        }, 1000);
+      } else {
+        clearInterval(timerInterval);
+        timerRunning = false;
+        btn.innerText = 'RESUME';
+        btn.classList.remove('bg-[#f9c846]');
+        btn.classList.add('bg-[#8bd5ca]');
+        mascotStatus.innerText = '"Paused. Take a breath! ⏸"';
+      }
+    }
+
+    function resetDemoTimer() {
+      clearInterval(timerInterval);
+      timerRunning = false;
+      document.getElementById('btn-demo-timer').innerText = 'START';
+      document.getElementById('btn-demo-timer').classList.remove('bg-[#f9c846]');
+      document.getElementById('btn-demo-timer').classList.add('bg-[#8bd5ca]');
+      
+      if (currentMode === 'focus') timerMinutes = 25;
+      else if (currentMode === 'short') timerMinutes = 5;
+      else timerMinutes = 15;
+      
+      timerSeconds = 0;
+      updateTimerDisplay();
+      document.getElementById('demo-mascot-status').innerText = '"Ready to study with you!"';
+    }
+
+    function setTimerMode(mode) {
+      currentMode = mode;
+      document.querySelectorAll('#mode-focus, #mode-short, #mode-long').forEach(b => b.classList.remove('active-tab'));
+      document.getElementById('mode-' + mode).classList.add('active-tab');
+      
+      const hpBar = document.getElementById('demo-hp-bar');
+      if (mode === 'focus') {
+        timerMinutes = 25;
+        hpBar.className = 'h-full bg-[#8bd5ca] transition-all duration-300';
+      } else if (mode === 'short') {
+        timerMinutes = 5;
+        hpBar.className = 'h-full bg-[#f9c846] transition-all duration-300';
+      } else {
+        timerMinutes = 15;
+        hpBar.className = 'h-full bg-[#f49ac2] transition-all duration-300';
+      }
+      timerSeconds = 0;
+      document.getElementById('demo-duration-label').innerText = timerMinutes + 'm';
+      resetDemoTimer();
+    }
+
+    function adjustDemoTime(delta) {
+      timerMinutes = Math.max(1, timerMinutes + delta);
+      document.getElementById('demo-duration-label').innerText = timerMinutes + 'm';
+      updateTimerDisplay();
+    }
+
+    function addDemoTask() {
+      const input = document.getElementById('demo-new-task-input');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const list = document.getElementById('demo-task-list');
+      const item = document.createElement('div');
+      item.className = 'pixel-inset p-2 bg-[#222034] flex items-center justify-between gap-2 group';
+      item.innerHTML = `
+        <div class="flex items-center gap-2 flex-1">
+          <input type="checkbox" onchange="toggleTaskDone(this)" class="w-4 h-4 cursor-pointer">
+          <span class="text-sm text-[#f6eedb]">${text}</span>
+        </div>
+        <span class="text-[10px] bg-[#8bd5ca] text-[#0a0912] px-1 font-bold">TASK</span>
+        <button onclick="this.parentElement.remove(); updateTaskStats();" class="text-xs text-[#ea7679] hover:underline px-1">✕</button>
+      `;
+      list.prepend(item);
+      input.value = '';
+      updateTaskStats();
+    }
+
+    function toggleTaskDone(checkbox) {
+      const label = checkbox.nextElementSibling;
+      if (checkbox.checked) {
+        label.classList.add('line-through', 'text-[#9990b8]');
+        label.classList.remove('text-[#f6eedb]');
+      } else {
+        label.classList.remove('line-through', 'text-[#9990b8]');
+        label.classList.add('text-[#f6eedb]');
+      }
+      updateTaskStats();
+    }
+
+    function updateTaskStats() {
+      const total = document.querySelectorAll('#demo-task-list input[type="checkbox"]').length;
+      const checked = document.querySelectorAll('#demo-task-list input[type="checkbox"]:checked').length;
+      document.getElementById('demo-task-count').innerText = `${checked}/${total} Done`;
+
+      const pct = total === 0 ? 0 : (checked / total) * 100;
+      document.getElementById('demo-tasks-progress-bar').style.width = pct + '%';
+    }
+
+    function selectCalendarDate(el, day) {
+      document.querySelectorAll('.grid-cols-7 .pixel-btn').forEach(b => b.classList.remove('active-tab'));
+      el.classList.add('active-tab');
+      const dayStr = String(day).padStart(2, '0');
+      document.getElementById('demo-selected-date-banner').innerText = `Viewing: Nov ${dayStr}, 2026`;
+    }
+  </script>
+</body>
+</html>
+

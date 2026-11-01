@@ -1,0 +1,182 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Default: Twilight Lo-Fi Sakura Study */
+  --color-canvas-bg: #98c9eb;
+  --color-surface-card: #201e33fa;
+  --color-surface-hover: #2c2946;
+  --color-surface-sunken: #131221;
+  --color-border-dark: #0d0c17;
+  --color-border-highlight: #5a5286;
+  --color-primary-accent: #f49ac2;
+  --color-secondary-accent: #8bd5ca;
+  --color-warning-break: #f9c846;
+  --color-text-main: #f6eedb;
+  --color-text-muted: #9d96bd;
+  --color-danger: #ea7679;
+}
+
+body.theme-sunny {
+  --color-canvas-bg: #98c9eb;
+  --color-surface-card: #f9f5edf5;
+  --color-surface-hover: #ede6d8;
+  --color-surface-sunken: #dfd7c5;
+  --color-border-dark: #2b2738;
+  --color-border-highlight: #b0a897;
+  --color-primary-accent: #e06d53;
+  --color-secondary-accent: #5e81ac;
+  --color-warning-break: #d08770;
+  --color-text-main: #2b2738;
+  --color-text-muted: #6e6779;
+  --color-danger: #bf616a;
+}
+
+body.theme-cyberpunk {
+  --color-canvas-bg: #0d1124;
+  --color-surface-card: #14172be6;
+  --color-surface-hover: #1e2340;
+  --color-surface-sunken: #0c0e18;
+  --color-border-dark: #030406;
+  --color-border-highlight: #00f0ff;
+  --color-primary-accent: #ff007f;
+  --color-secondary-accent: #00f0ff;
+  --color-warning-break: #ffe600;
+  --color-text-main: #e2f3f5;
+  --color-text-muted: #72849e;
+  --color-danger: #ff2a2a;
+}
+
+body {
+  background-color: var(--color-canvas-bg);
+  color: var(--color-text-main);
+  font-family: 'VT323', 'Courier New', monospace;
+  image-rendering: pixelated;
+  -webkit-font-smoothing: none;
+  font-smooth: never;
+  overflow-x: hidden;
+}
+
+/* Zoomed-out container scaling rules */
+.app-zoom-container {
+  zoom: 0.9;
+}
+
+@supports not (zoom: 0.9) {
+  .app-zoom-container {
+    transform: scale(0.9);
+    transform-origin: top center;
+  }
+}
+
+/* Pixel Card / Panel */
+.pixel-panel {
+  background-color: var(--color-surface-card);
+  border: 3px solid var(--color-border-dark);
+  box-shadow: 4px 4px 0px 0px var(--color-border-dark);
+  backdrop-filter: blur(4px);
+}
+
+/* Tactile 3D Pixel Button */
+.pixel-button {
+  background-color: var(--color-surface-card);
+  border: 3px solid var(--color-border-dark);
+  box-shadow: 3px 3px 0px 0px var(--color-border-dark);
+  color: var(--color-text-main);
+  transition: transform 0.05s ease, box-shadow 0.05s ease;
+  cursor: pointer;
+  user-select: none;
+}
+
+.pixel-button:hover {
+  background-color: var(--color-surface-hover);
+}
+
+.pixel-button:active, .pixel-button.active-pressed {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px 0px var(--color-border-dark);
+}
+
+/* Sunken Inset Container */
+.pixel-inset {
+  background-color: var(--color-surface-sunken);
+  border: 2px solid var(--color-border-dark);
+  box-shadow: inset 2px 2px 0px rgba(0, 0, 0, 0.4);
+}
+
+/* Stepped Sprite Animations */
+@keyframes sprite-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+.animate-sprite-bob {
+  animation: sprite-bob 1.8s steps(2) infinite;
+}
+
+@keyframes pixel-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.animate-pixel-blink {
+  animation: pixel-blink 1.2s steps(2) infinite;
+}
+
+/* Sakura Petal Floating Animation */
+@keyframes sakura-fall {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate(30px, 25vh) rotate(90deg);
+  }
+  50% {
+    transform: translate(15px, 50vh) rotate(180deg);
+  }
+  75% {
+    transform: translate(45px, 75vh) rotate(270deg);
+  }
+  100% {
+    transform: translate(20px, 110vh) rotate(360deg);
+  }
+}
+
+.animate-sakura-fall {
+  animation-name: sakura-fall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+/* Slow Cloud Drifting */
+@keyframes cloud-drift {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(40px); }
+  100% { transform: translateX(0); }
+}
+
+.animate-cloud-slow {
+  animation: cloud-drift 24s ease-in-out infinite;
+}
+
+.animate-cloud-slower {
+  animation: cloud-drift 32s ease-in-out infinite reverse;
+}
+
+/* Custom Pixel Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-surface-sunken);
+  border: 2px solid var(--color-border-dark);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border-highlight);
+  border: 2px solid var(--color-border-dark);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary-accent);
+}
