@@ -11,7 +11,7 @@ import { SettingsModal } from './components/SettingsModal';
 import { ScenicBackground } from './components/ScenicBackground';
 import { StreakModal } from './components/StreakModal';
 import { PasscodeLock } from './components/PasscodeLock';
-import { LofiPlayer } from './components/LofiPlayer';
+import { SoundCloudCustomPlayer } from './components/SoundCloudCustomPlayer';
 
 export function App() {
   const [tasks, setTasks] = useState<Task[]>(() => storageService.loadTasks());
@@ -363,8 +363,8 @@ export function App() {
           </main>
         </div>
 
-        {/* Lofi Music Player Console & Song Banner (Replaces Old Footer) */}
-        <LofiPlayer />
+        {/* Custom 16-Bit Anime SoundCloud Cassette Player & Banner */}
+        <SoundCloudCustomPlayer />
 
         {/* Configuration Modal */}
         <SettingsModal
