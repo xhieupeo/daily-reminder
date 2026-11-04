@@ -13,6 +13,8 @@ export const DEFAULT_SETTINGS: PomodoroSettings = {
   soundEnabled: true,
   ambientSound: 'none',
   ambientVolume: 0.3,
+  alarmSound: 'schoolChime',
+  desktopNotifications: true,
 };
 
 export function getTodayString(): string {

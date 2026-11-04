@@ -15,6 +15,13 @@ export interface Task {
 
 export type TimerMode = 'focus' | 'shortBreak' | 'longBreak';
 
+export type AlarmSoundType =
+  | 'schoolChime'
+  | 'victoryFanfare'
+  | 'zenGong'
+  | 'cyberBeep'
+  | 'sakuraHarp';
+
 export interface PomodoroSettings {
   focusMinutes: number;
   shortBreakMinutes: number;
@@ -23,6 +30,8 @@ export interface PomodoroSettings {
   soundEnabled: boolean;
   ambientSound: 'none' | 'rain' | 'whitenoise';
   ambientVolume: number;
+  alarmSound: AlarmSoundType;
+  desktopNotifications: boolean;
 }
 
 export interface PomodoroState {

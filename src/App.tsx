@@ -3,6 +3,7 @@ import { Task, TimerMode, PomodoroSettings, StudyStats, ThemeType } from './type
 import { storageService, calculateStreakFromTasks, getTodayString } from './services/storageService';
 import { supabaseService } from './services/supabaseService';
 import { sound } from './services/soundService';
+import { notificationService } from './services/notificationService';
 import { Navbar } from './components/Navbar';
 import { CompanionMascot } from './components/CompanionMascot';
 import { PomodoroTimer } from './components/PomodoroTimer';
@@ -39,6 +40,11 @@ export function App() {
   const [celebrating, setCelebrating] = useState<boolean>(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   const [isStreakModalOpen, setIsStreakModalOpen] = useState<boolean>(false);
+  const [timerAlert, setTimerAlert] = useState<{
+    title: string;
+    message: string;
+    type: 'focus' | 'break';
+  } | null>(null);
   const [isCloudSynced, setIsCloudSynced] = useState<boolean>(() => supabaseService.isConfigured());
 
   // Cloud Synchronization with Supabase
@@ -125,7 +131,29 @@ export function App() {
   }, [isTimerRunning, timerMode, cyclesCompleted, settings, activeTaskId]);
 
   const handleTimerCompleted = () => {
-    sound.playTimerDone();
+    // 1. Play chosen notification alarm sound
+    sound.playAlarmSound(settings.alarmSound || 'schoolChime');
+
+    // 2. Dispatch desktop browser push alert if enabled
+    if (settings.desktopNotifications) {
+      notificationService.sendTimerNotification(timerMode);
+    }
+
+    // 3. Dispatch in-app retro banner alert
+    if (timerMode === 'focus') {
+      setTimerAlert({
+        title: '🔔 FOCUS SESSION COMPLETE!',
+        message: 'Awesome focus, Xuan Hieu! Time to rest your eyes and grab a drink 🍵.',
+        type: 'focus',
+      });
+    } else {
+      setTimerAlert({
+        title: '🌸 BREAK TIME FINISHED!',
+        message: "Break's over! Ready to jump back in and conquer your tasks? 💻",
+        type: 'break',
+      });
+    }
+    setTimeout(() => setTimerAlert(null), 10000);
 
     if (timerMode === 'focus') {
       const nextCycles = cyclesCompleted + 1;
@@ -318,6 +346,47 @@ export function App() {
             onLockApp={handleLockApp}
             isCloudSynced={isCloudSynced}
           />
+
+          {/* In-App Retro Timer Alert Toast Banner */}
+          {timerAlert && (
+            <div className="mb-3 p-3 bg-[#1e1c2ff5] border-2 border-[var(--color-primary-accent)] rounded-sm shadow-pixel flex flex-col sm:flex-row items-center justify-between gap-3 animate-pulse">
+              <div className="flex items-center gap-2.5">
+                <span className="text-xl">
+                  {timerAlert.type === 'focus' ? '🍵' : '💻'}
+                </span>
+                <div>
+                  <h4 className="font-pixel text-xs text-[var(--color-primary-accent)] tracking-wide">
+                    {timerAlert.title}
+                  </h4>
+                  <p className="font-retro text-xs text-[#f5e0dc]">
+                    {timerAlert.message}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => {
+                    sound.playClick();
+                    setIsTimerRunning(true);
+                    setTimerAlert(null);
+                  }}
+                  className="pixel-button px-3 py-1.5 text-xs font-pixel bg-[var(--color-secondary-accent)] text-[#0d0c17] font-bold"
+                >
+                  {timerAlert.type === 'focus' ? 'START BREAK ▶' : 'START FOCUS ▶'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTimerAlert(null)}
+                  className="pixel-button px-2 py-1 text-xs text-[#a6adc8] hover:text-[#fff]"
+                  title="Dismiss alert"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* 3-Column Main Dashboard Grid */}
           <main className="grid grid-cols-1 lg:grid-cols-12 gap-3.5">

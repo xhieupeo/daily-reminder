@@ -242,6 +242,7 @@ Creates an optimized, production-ready bundle in `dist/`.
 | **v1.6 - SoundCloud Player** | Built custom 16-bit retro cassette player with animated spinning reels, transport controls, LCD display, presets, and custom URL support. |
 | **v1.7 - Supabase Cloud Sync**| Integrated `@supabase/supabase-js` for real-time cloud task persistence, 1-click SQL setup, connection testing, and navbar cloud status pill. |
 | **v1.8 - Audio Bridge & Controls**| Fixed collapse unmount bug with persistent audio bridge, added mini top bar transport controls, Smart Shuffle, 3-mode Repeat Loop, and interactive Tracklist drawer. |
+| **v1.9 - Session Notifications & Alarms**| Added desktop browser push notifications, in-app timer finish alert banner, 5 selectable procedural alarm sounds (Anime School Bell, RPG Victory Fanfare, Zen Gong, Cyber Beep, Sakura Harp), and instant audio preview. |
 
 ---
 

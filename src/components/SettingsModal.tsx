@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { PomodoroSettings } from '../types';
+import { PomodoroSettings, AlarmSoundType } from '../types';
 import { sound } from '../services/soundService';
+import { notificationService } from '../services/notificationService';
 import {
   getSupabaseConfig,
   saveLocalSupabaseCredentials,
@@ -17,6 +18,8 @@ import {
   Copy,
   Trash2,
   ExternalLink,
+  Bell,
+  Play,
 } from 'lucide-react';
 
 interface SettingsModalProps {
@@ -44,9 +47,13 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   const [syncStatus, setSyncStatus] = useState<string | null>(null);
   const [isTesting, setIsTesting] = useState<boolean>(false);
   const [copiedSql, setCopiedSql] = useState<boolean>(false);
+  const [notificationPermission, setNotificationPermission] = useState<NotificationPermission>(() => {
+    return notificationService.getPermission();
+  });
 
   useEffect(() => {
     if (isOpen) {
+      setNotificationPermission(notificationService.getPermission());
       const config = getSupabaseConfig();
       if (config) {
         setSupabaseUrl(config.url);
@@ -169,13 +176,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             </div>
           </div>
 
-          {/* Section 2: Audio & Lofi Ambiance */}
+          {/* Section 2: Audio, Alarm Sounds & Notifications */}
           <div className="space-y-3">
             <h3 className="font-pixel text-[10px] text-[var(--color-secondary-accent)] uppercase flex items-center gap-1.5">
               <Volume2 className="w-3.5 h-3.5" />
-              2. Ambiance & Audio
+              2. Ambiance, Alarm Sound & Notifications
             </h3>
-            <div className="pixel-inset p-3 bg-[#141324] space-y-2.5 font-retro text-xs">
+            <div className="pixel-inset p-3 bg-[#141324] space-y-3 font-retro text-xs">
+              {/* Sound Effects Toggle */}
               <div className="flex items-center justify-between">
                 <span>Sound Effects (Chimes & Clicks):</span>
                 <input
@@ -184,11 +192,49 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   onChange={(e) =>
                     setFormState({ ...formState, soundEnabled: e.target.checked })
                   }
-                  className="w-4 h-4 cursor-pointer"
+                  className="w-4 h-4 cursor-pointer accent-[var(--color-primary-accent)]"
                 />
               </div>
 
-              <div className="flex items-center justify-between">
+              {/* Pomodoro Completion Alarm Sound Selector */}
+              <div className="pt-1 border-t border-[#232038]">
+                <label className="block text-[11px] text-[var(--color-text-muted)] mb-1">
+                  Session Finished Alarm Sound:
+                </label>
+                <div className="flex items-center gap-2">
+                  <select
+                    value={formState.alarmSound || 'schoolChime'}
+                    onChange={(e) => {
+                      const soundChoice = e.target.value as AlarmSoundType;
+                      setFormState({ ...formState, alarmSound: soundChoice });
+                      sound.playAlarmSound(soundChoice);
+                    }}
+                    className="pixel-inset bg-[#1f1d30] px-2 py-1.5 text-xs text-[var(--color-text-main)] focus:outline-none flex-1 font-retro"
+                  >
+                    <option value="schoolChime">🔔 Anime School Chime (Westminster Bell)</option>
+                    <option value="victoryFanfare">🎮 8-Bit Victory Fanfare (RPG Level Up)</option>
+                    <option value="zenGong">🍵 Zen Singing Bowl (Crystal Gong)</option>
+                    <option value="cyberBeep">⏰ Digital Cyber Triple Beep</option>
+                    <option value="sakuraHarp">🌸 Sakura Pentatonic Harp Sweep</option>
+                  </select>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      sound.playClick();
+                      sound.playAlarmSound(formState.alarmSound || 'schoolChime');
+                    }}
+                    className="pixel-button px-2.5 py-1.5 text-xs font-pixel flex items-center gap-1 text-[#e5c890] hover:text-[#fff] shrink-0"
+                    title="Preview this alarm sound"
+                  >
+                    <Play className="w-3 h-3 fill-current" />
+                    <span>TEST</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Ambient Study Background */}
+              <div className="flex items-center justify-between pt-1 border-t border-[#232038]">
                 <span>Ambient Study Background:</span>
                 <select
                   value={formState.ambientSound}
@@ -201,6 +247,75 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   <option value="rain">Cozy Lofi Rain 🌧</option>
                   <option value="whitenoise">Study White Noise 📻</option>
                 </select>
+              </div>
+
+              {/* Desktop Browser Notifications */}
+              <div className="pt-2 border-t border-[#232038] space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="flex items-center gap-1.5">
+                    <Bell className="w-3.5 h-3.5 text-[#e5c890]" />
+                    <span>Desktop Browser Push Alerts:</span>
+                  </span>
+                  <input
+                    type="checkbox"
+                    checked={formState.desktopNotifications ?? true}
+                    onChange={(e) =>
+                      setFormState({ ...formState, desktopNotifications: e.target.checked })
+                    }
+                    className="w-4 h-4 cursor-pointer accent-[var(--color-primary-accent)]"
+                  />
+                </div>
+
+                <div className="flex flex-wrap items-center justify-between gap-2 bg-[#1b192c] p-2 rounded-xs border border-[#2d2946]">
+                  <div className="text-[10px] text-[#a6adc8]">
+                    {notificationPermission === 'granted' ? (
+                      <span className="text-[#a6e3a1] font-bold flex items-center gap-1">
+                        <span>🟢</span> Browser permission granted
+                      </span>
+                    ) : notificationPermission === 'denied' ? (
+                      <span className="text-[#ea7679] flex items-center gap-1">
+                        <span>🔴</span> Blocked in browser settings
+                      </span>
+                    ) : (
+                      <span className="text-[#e5c890] flex items-center gap-1">
+                        <span>⚪</span> Permission not yet requested
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="flex items-center gap-1.5">
+                    {notificationPermission !== 'granted' && (
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          sound.playClick();
+                          const granted = await notificationService.requestPermission();
+                          setNotificationPermission(notificationService.getPermission());
+                          if (granted) {
+                            setFormState((prev) => ({ ...prev, desktopNotifications: true }));
+                            notificationService.sendTimerNotification('focus');
+                          }
+                        }}
+                        className="pixel-button px-2 py-1 text-[10px] font-pixel text-[#8bd5ca]"
+                      >
+                        ALLOW ALERTS
+                      </button>
+                    )}
+
+                    {notificationPermission === 'granted' && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          sound.playClick();
+                          notificationService.sendTimerNotification('focus');
+                        }}
+                        className="pixel-button px-2 py-1 text-[10px] font-pixel text-[#e5c890]"
+                      >
+                        TEST POPUP
+                      </button>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
