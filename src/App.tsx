@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Task, TimerMode, PomodoroSettings, StudyStats, ThemeType } from './types';
 import { storageService, calculateStreakFromTasks, getTodayString } from './services/storageService';
+import { supabaseService } from './services/supabaseService';
 import { sound } from './services/soundService';
 import { Navbar } from './components/Navbar';
 import { CompanionMascot } from './components/CompanionMascot';
@@ -38,6 +39,37 @@ export function App() {
   const [celebrating, setCelebrating] = useState<boolean>(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   const [isStreakModalOpen, setIsStreakModalOpen] = useState<boolean>(false);
+  const [isCloudSynced, setIsCloudSynced] = useState<boolean>(() => supabaseService.isConfigured());
+
+  // Cloud Synchronization with Supabase
+  const syncWithCloud = async () => {
+    if (supabaseService.isConfigured()) {
+      try {
+        const synced = await supabaseService.syncAllTasks(tasks);
+        setTasks(synced);
+        setIsCloudSynced(true);
+      } catch (err) {
+        console.warn('Supabase sync error:', err);
+      }
+    } else {
+      setIsCloudSynced(false);
+    }
+  };
+
+  useEffect(() => {
+    syncWithCloud();
+
+    if (supabaseService.isConfigured()) {
+      const unsubscribe = supabaseService.subscribeToChanges(() => {
+        supabaseService.fetchTasks().then((remote) => {
+          if (remote && remote.length > 0) {
+            setTasks(remote);
+          }
+        });
+      });
+      return () => unsubscribe();
+    }
+  }, []);
 
   // Sync theme to body class
   useEffect(() => {
@@ -108,11 +140,14 @@ export function App() {
       // Increment active task completed pomodoros
       if (activeTaskId) {
         setTasks((prev) =>
-          prev.map((t) =>
-            t.id === activeTaskId
-              ? { ...t, completedPomodoros: t.completedPomodoros + 1 }
-              : t
-          )
+          prev.map((t) => {
+            if (t.id === activeTaskId) {
+              const updated = { ...t, completedPomodoros: t.completedPomodoros + 1 };
+              supabaseService.upsertTask(updated);
+              return updated;
+            }
+            return t;
+          })
         );
       }
 
@@ -180,11 +215,13 @@ export function App() {
       completedPomodoros: 0,
     };
     setTasks((prev) => [newTask, ...prev]);
+    supabaseService.upsertTask(newTask);
   };
 
   const handleUpdateTask = (updated: Task) => {
     const nextTasks = tasks.map((t) => (t.id === updated.id ? updated : t));
     setTasks(nextTasks);
+    supabaseService.upsertTask(updated);
 
     // When a task is completed, evaluate streak: streak is formed when created & finished
     if (updated.completed) {
@@ -203,6 +240,7 @@ export function App() {
     const nextTasks = tasks.filter((t) => t.id !== id);
     setTasks(nextTasks);
     if (activeTaskId === id) setActiveTaskId(null);
+    supabaseService.deleteTask(id);
   };
 
   const handleResetStreakToOne = () => {
@@ -278,6 +316,7 @@ export function App() {
             zoomLevel={zoomLevel}
             onZoomChange={handleZoomChange}
             onLockApp={handleLockApp}
+            isCloudSynced={isCloudSynced}
           />
 
           {/* 3-Column Main Dashboard Grid */}
@@ -381,6 +420,7 @@ export function App() {
           }}
           onExportData={handleExportData}
           onImportData={handleImportData}
+          onCloudSyncTrigger={syncWithCloud}
         />
 
         {/* Streak Tracker & Journey Modal */}

@@ -1,7 +1,7 @@
 import React from 'react';
 import { ThemeType, StudyStats } from '../types';
 import { sound } from '../services/soundService';
-import { Volume2, VolumeX, Settings, Flame, Sparkles, Moon, Sun, Zap, ZoomIn, Lock } from 'lucide-react';
+import { Volume2, VolumeX, Settings, Flame, Sparkles, Moon, Sun, Zap, ZoomIn, Lock, Cloud } from 'lucide-react';
 
 interface NavbarProps {
   stats: StudyStats;
@@ -14,6 +14,7 @@ interface NavbarProps {
   zoomLevel: number;
   onZoomChange: (zoom: number) => void;
   onLockApp?: () => void;
+  isCloudSynced?: boolean;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -27,6 +28,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   zoomLevel,
   onZoomChange,
   onLockApp,
+  isCloudSynced = false,
 }) => {
   const cycleTheme = () => {
     sound.playClick();
@@ -135,6 +137,30 @@ export const Navbar: React.FC<NavbarProps> = ({
           ) : (
             <VolumeX className="w-3.5 h-3.5 text-[var(--color-danger)]" />
           )}
+        </button>
+
+        {/* Cloud Sync Status Pill */}
+        <button
+          type="button"
+          onClick={() => {
+            sound.playClick();
+            onOpenSettings();
+          }}
+          title={
+            isCloudSynced
+              ? 'Supabase Cloud Database: Connected & Synchronized 🟢'
+              : 'Local Storage Mode: Click to connect Supabase database'
+          }
+          className={`pixel-button px-2 py-1 flex items-center gap-1 text-[10px] font-pixel ${
+            isCloudSynced
+              ? 'text-[#a6e3a1] bg-[#a6e3a1]/15 border-[#a6e3a1]'
+              : 'text-[var(--color-text-muted)] hover:text-[var(--color-text-main)]'
+          }`}
+        >
+          <Cloud className={`w-3.5 h-3.5 ${isCloudSynced ? 'text-[#a6e3a1]' : ''}`} />
+          <span className="hidden md:inline">
+            {isCloudSynced ? 'CLOUD' : 'LOCAL'}
+          </span>
         </button>
 
         {/* Settings Button */}

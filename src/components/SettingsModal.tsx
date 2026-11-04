@@ -1,7 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PomodoroSettings } from '../types';
 import { sound } from '../services/soundService';
-import { X, Sliders, Volume2, Cloud, Download, Upload, Check } from 'lucide-react';
+import {
+  getSupabaseConfig,
+  saveLocalSupabaseCredentials,
+  supabaseService,
+} from '../services/supabaseService';
+import {
+  X,
+  Sliders,
+  Volume2,
+  Cloud,
+  Download,
+  Upload,
+  Check,
+  Copy,
+  Trash2,
+  ExternalLink,
+} from 'lucide-react';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -10,6 +26,7 @@ interface SettingsModalProps {
   onSaveSettings: (settings: PomodoroSettings) => void;
   onExportData: () => void;
   onImportData: (jsonStr: string) => void;
+  onCloudSyncTrigger?: () => void;
 }
 
 export const SettingsModal: React.FC<SettingsModalProps> = ({
@@ -19,11 +36,27 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   onSaveSettings,
   onExportData,
   onImportData,
+  onCloudSyncTrigger,
 }) => {
   const [formState, setFormState] = useState<PomodoroSettings>(settings);
   const [supabaseUrl, setSupabaseUrl] = useState('');
   const [supabaseKey, setSupabaseKey] = useState('');
   const [syncStatus, setSyncStatus] = useState<string | null>(null);
+  const [isTesting, setIsTesting] = useState<boolean>(false);
+  const [copiedSql, setCopiedSql] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      const config = getSupabaseConfig();
+      if (config) {
+        setSupabaseUrl(config.url);
+        setSupabaseKey(config.anonKey);
+        setSyncStatus('Connected to Supabase cloud database 🟢');
+      } else {
+        setSyncStatus(null);
+      }
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -174,55 +207,153 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
           {/* Section 3: Cloud Database Sync (Supabase) */}
           <div className="space-y-2">
-            <h3 className="font-pixel text-[10px] text-[var(--color-warning-break)] uppercase flex items-center gap-1.5">
-              <Cloud className="w-3.5 h-3.5" />
-              3. Cloud Database Sync (Supabase)
-            </h3>
-            <div className="pixel-inset p-3 bg-[#141324] space-y-2 font-retro text-xs">
+            <div className="flex items-center justify-between">
+              <h3 className="font-pixel text-[10px] text-[var(--color-warning-break)] uppercase flex items-center gap-1.5">
+                <Cloud className="w-3.5 h-3.5" />
+                3. Supabase Cloud Database (Task Persistence)
+              </h3>
+              <a
+                href="https://supabase.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[10px] font-retro text-[var(--color-secondary-accent)] hover:underline flex items-center gap-0.5"
+              >
+                supabase.com <ExternalLink className="w-2.5 h-2.5" />
+              </a>
+            </div>
+
+            <div className="pixel-inset p-3 bg-[#141324] space-y-2.5 font-retro text-xs">
               <p className="text-[var(--color-text-muted)] text-[11px]">
-                Enter your Supabase credentials to sync tasks across all devices. LocalStorage continues working offline automatically.
+                Connect your free Supabase database so your daily tasks and streak history are safely saved in the cloud across all your devices.
               </p>
+
+              {/* SQL Setup Helper */}
+              <div className="bg-[#1c1a2d] border border-[#313244] p-2 rounded-xs flex items-center justify-between gap-2">
+                <div className="text-[10px] text-[var(--color-text-main)]">
+                  <span className="font-pixel text-[9px] text-[#e5c890] block">STEP 1: DATABASE TABLE</span>
+                  Run SQL in Supabase SQL Editor to initialize the tasks table.
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    sound.playClick();
+                    const sql = `CREATE TABLE IF NOT EXISTS public.tasks (
+  id TEXT PRIMARY KEY,
+  title TEXT NOT NULL,
+  description TEXT DEFAULT '',
+  date TEXT NOT NULL,
+  priority TEXT NOT NULL DEFAULT 'med',
+  completed BOOLEAN NOT NULL DEFAULT false,
+  "estimatedPomodoros" INTEGER NOT NULL DEFAULT 1,
+  "completedPomodoros" INTEGER NOT NULL DEFAULT 0,
+  tag TEXT DEFAULT '',
+  "createdAt" BIGINT NOT NULL
+);
+
+ALTER TABLE public.tasks ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow public full access to tasks"
+ON public.tasks
+FOR ALL
+TO anon
+USING (true)
+WITH CHECK (true);`;
+                    navigator.clipboard.writeText(sql);
+                    setCopiedSql(true);
+                    setTimeout(() => setCopiedSql(false), 3000);
+                  }}
+                  className="pixel-button px-2 py-1 text-[10px] font-pixel flex items-center gap-1 shrink-0 text-[#8bd5ca]"
+                  title="Copy SQL table setup"
+                >
+                  {copiedSql ? <Check className="w-3 h-3 text-[#a6e3a1]" /> : <Copy className="w-3 h-3" />}
+                  <span>{copiedSql ? 'SQL COPIED!' : 'COPY SQL'}</span>
+                </button>
+              </div>
+
+              {/* Credentials Form */}
               <div>
-                <label className="block text-[11px] text-[var(--color-text-muted)]">Project URL:</label>
+                <label className="block text-[11px] text-[var(--color-text-muted)] mb-0.5">
+                  Project URL:
+                </label>
                 <input
                   type="text"
                   placeholder="https://xyzcompany.supabase.co"
                   value={supabaseUrl}
                   onChange={(e) => setSupabaseUrl(e.target.value)}
-                  className="w-full pixel-inset bg-[#1f1d30] px-2 py-1 text-xs text-[var(--color-text-main)] focus:outline-none"
+                  className="w-full pixel-inset bg-[#1f1d30] px-2 py-1 text-xs text-[var(--color-text-main)] focus:outline-none font-mono"
                 />
               </div>
+
               <div>
-                <label className="block text-[11px] text-[var(--color-text-muted)]">Anon Public Key:</label>
+                <label className="block text-[11px] text-[var(--color-text-muted)] mb-0.5">
+                  Anon Public Key:
+                </label>
                 <input
                   type="password"
                   placeholder="eyJhbGciOi..."
                   value={supabaseKey}
                   onChange={(e) => setSupabaseKey(e.target.value)}
-                  className="w-full pixel-inset bg-[#1f1d30] px-2 py-1 text-xs text-[var(--color-text-main)] focus:outline-none"
+                  className="w-full pixel-inset bg-[#1f1d30] px-2 py-1 text-xs text-[var(--color-text-main)] focus:outline-none font-mono"
                 />
               </div>
-              <button
-                type="button"
-                onClick={() => {
-                  sound.playClick();
-                  if (!supabaseUrl || !supabaseKey) {
-                    setSyncStatus('Please fill in URL & Anon Key');
-                  } else {
-                    localStorage.setItem('anime_pixel_supabase_url', supabaseUrl);
-                    localStorage.setItem('anime_pixel_supabase_key', supabaseKey);
-                    setSyncStatus('Saved! Cloud sync ready.');
-                  }
-                }}
-                className="pixel-button px-3 py-1 font-pixel text-[9px] text-[var(--color-warning-break)] flex items-center gap-1 mt-1"
-              >
-                <Check className="w-3 h-3" />
-                SAVE CREDENTIALS
-              </button>
+
+              <div className="flex flex-wrap items-center gap-2 pt-1">
+                <button
+                  type="button"
+                  disabled={isTesting}
+                  onClick={async () => {
+                    sound.playClick();
+                    if (!supabaseUrl.trim() || !supabaseKey.trim()) {
+                      setSyncStatus('⚠️ Please enter both Project URL and Anon Key');
+                      return;
+                    }
+                    setIsTesting(true);
+                    setSyncStatus('Testing connection to Supabase...');
+                    const result = await supabaseService.testConnection(supabaseUrl, supabaseKey);
+                    setIsTesting(false);
+
+                    if (result.success) {
+                      saveLocalSupabaseCredentials(supabaseUrl, supabaseKey);
+                      setSyncStatus('Connected & Saved! Cloud sync is now active 🟢');
+                      if (onCloudSyncTrigger) onCloudSyncTrigger();
+                    } else {
+                      setSyncStatus(`⚠️ ${result.message}`);
+                    }
+                  }}
+                  className="pixel-button px-3 py-1 font-pixel text-[9px] text-[#0d0c17] bg-[var(--color-warning-break)] flex items-center gap-1 font-bold"
+                >
+                  <Check className="w-3 h-3" />
+                  {isTesting ? 'CONNECTING...' : 'TEST & SAVE CONNECTION'}
+                </button>
+
+                {supabaseUrl && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      sound.playClick();
+                      saveLocalSupabaseCredentials('', '');
+                      setSupabaseUrl('');
+                      setSupabaseKey('');
+                      setSyncStatus('Disconnected. Running in offline/local storage mode.');
+                    }}
+                    className="pixel-button px-2 py-1 font-pixel text-[9px] text-[var(--color-danger)] flex items-center gap-1"
+                  >
+                    <Trash2 className="w-3 h-3" />
+                    DISCONNECT
+                  </button>
+                )}
+              </div>
+
               {syncStatus && (
-                <span className="text-[11px] text-[var(--color-secondary-accent)] block mt-1">
+                <div className={`p-1.5 rounded-xs text-[11px] font-retro ${
+                  syncStatus.includes('🟢') || syncStatus.includes('Saved')
+                    ? 'bg-[#a6e3a1]/20 text-[#a6e3a1] border border-[#a6e3a1]/40'
+                    : syncStatus.includes('⚠️')
+                    ? 'bg-[#ea7679]/20 text-[#ea7679] border border-[#ea7679]/40'
+                    : 'text-[#e5c890]'
+                }`}>
                   {syncStatus}
-                </span>
+                </div>
               )}
             </div>
           </div>
