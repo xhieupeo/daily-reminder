@@ -241,6 +241,7 @@ Creates an optimized, production-ready bundle in `dist/`.
 | **v1.5 - Passcode Gatekeeper** | Added private gatekeeper lock screen with master PIN `110907`, persistent session, and instant re-lock. |
 | **v1.6 - SoundCloud Player** | Built custom 16-bit retro cassette player with animated spinning reels, transport controls, LCD display, presets, and custom URL support. |
 | **v1.7 - Supabase Cloud Sync**| Integrated `@supabase/supabase-js` for real-time cloud task persistence, 1-click SQL setup, connection testing, and navbar cloud status pill. |
+| **v1.8 - Audio Bridge & Controls**| Fixed collapse unmount bug with persistent audio bridge, added mini top bar transport controls, Smart Shuffle, 3-mode Repeat Loop, and interactive Tracklist drawer. |
 
 ---
 
